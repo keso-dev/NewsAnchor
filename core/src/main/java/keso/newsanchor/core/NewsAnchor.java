@@ -42,13 +42,7 @@ public class NewsAnchor implements Game {
 	path.moveTo(300, 300);
 	path.arcTo(100, 350, 400);
 	path.lineTo(350, 350);
-	path.close();
-	
-	
-	canvas.setStrokeColor(0xffff0000);
-	canvas.drawLine(i++, 50, 100, 100);
-
-	  
+	path.close();	  
 	  
 	  
 	canvas.clear();
