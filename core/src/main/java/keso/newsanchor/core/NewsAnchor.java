@@ -56,6 +56,9 @@ public class NewsAnchor implements Game {
 	canvas.setFillColor(0xff00ffff);
 	canvas.fillPath(path);
 	canvas.strokePath(path);
+	
+	canvas.setFillColor(0xff000000);
+	canvas.drawText("Frames: " + i, 200, 200);
 
 	  
 	  i++;
