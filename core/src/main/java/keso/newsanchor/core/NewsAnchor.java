@@ -7,6 +7,7 @@ import playn.core.CanvasLayer;
 import playn.core.Game;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Path;
 
 public class NewsAnchor implements Game {
 	
@@ -24,7 +25,10 @@ public class NewsAnchor implements Game {
     graphics().rootLayer().add(layer);
     
     canvas = layer.canvas();
-    
+	canvas.setStrokeWidth(2);
+	canvas.setStrokeColor(0xffff0000);
+	canvas.strokeRect(1, 1, 46, 46);		
+
   }
 
   @Override
@@ -34,12 +38,31 @@ public class NewsAnchor implements Game {
 
   @Override
   public void update(float delta) {
+	Path path = graphics().createPath();
+	path.moveTo(300, 300);
+	path.arcTo(100, 350, 400);
+	path.lineTo(350, 350);
+	path.close();
+	
+	
+	canvas.setStrokeColor(0xffff0000);
+	canvas.drawLine(i++, 50, 100, 100);
+
 	  
-	  canvas.clear();
 	  
-	  // Test 
-	  canvas.setStrokeColor(0xffff0000);
-	  canvas.drawLine(i, 50, 100, 100);
+	  
+	canvas.clear();
+	  
+	// Test 
+	canvas.setStrokeColor(0xffff0000);
+	canvas.drawLine(i, 50, 100, 100);
+	  
+
+	canvas.setStrokeColor(0xff000000);
+	canvas.setFillColor(0xff00ffff);
+	canvas.fillPath(path);
+	canvas.strokePath(path);
+
 	  
 	  i++;
   }
