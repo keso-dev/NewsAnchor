@@ -109,14 +109,16 @@ public class NewsAnchor implements Game {
 	  	  
 	  Vector v = v1.scale(i);
 
-	  
+	  // Get altitude from FractalTerrain
+	  float altitude = (float)terrain.getAltitude(i, 0);		  
+
+	  // Scale altitude so that it is minimal close to start and end points
 	  float totalDistance = start.distance(end);
 	  float ratioStart = start.distance(start.add(v)) / totalDistance;
-	  float ratioEnd = end.distance(start.add(v)) / totalDistance;
+	  float ratioEnd = end.distance(start.add(v)) / totalDistance;	  
+	  altitude = altitude * ratioStart * ratioEnd; 
 	  
-	  float altitude = (float)terrain.getAltitude(i, 0);		  
-	  altitude = altitude * ratioStart * ratioEnd; // scale altitude so that it is minimal close to start and end points
-	  
+	  // Scale and invert v2
 	  v2.scaleLocal(altitude*400.0f);
 	  v2.negateLocal();
 	  
