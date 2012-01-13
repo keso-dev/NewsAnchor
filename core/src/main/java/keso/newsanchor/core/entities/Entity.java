@@ -54,14 +54,14 @@ public abstract class Entity {
   }
 
   /**
-   * Perform pre-image load initialization (e.g., attaching to PeaWorld layers).
+   * Perform pre-image load initialization (e.g., attaching to NewsAnchorWorld layers).
    *
    * @param newsAnchorWorld
    */
   public abstract void initPreLoad(final NewsAnchorWorld newsAnchorWorld);
 
   /**
-   * Perform post-image load initialization (e.g., attaching to PeaWorld layers).
+   * Perform post-image load initialization (e.g., attaching to NewsAnchorWorld layers).
    *
    * @param newsAnchorWorld
    */
