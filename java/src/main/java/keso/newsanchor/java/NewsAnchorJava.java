@@ -4,6 +4,7 @@ import playn.core.PlayN;
 import playn.java.JavaPlatform;
 
 import keso.newsanchor.core.NewsAnchor;
+import keso.newsanchor.core.NewsAnchorOld;
 
 public class NewsAnchorJava {
 

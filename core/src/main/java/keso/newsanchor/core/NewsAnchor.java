@@ -1,134 +1,112 @@
+/**
+ * Copyright 2011 The PlayN Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package keso.newsanchor.core;
 
-import static playn.core.PlayN.*;
+import static playn.core.PlayN.assetManager;
+import static playn.core.PlayN.graphics;
+import static playn.core.PlayN.pointer;
 
-
-import net.sourceforge.htmlunit.corejs.javascript.debug.DebugFrame;
-
-import playn.core.Canvas;
-import playn.core.CanvasLayer;
 import playn.core.Game;
+import playn.core.PlayN;
+import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.Path;
-import pythagoras.f.Point;
-import pythagoras.f.Vector;
+import playn.core.Pointer;
+import playn.core.ResourceCallback;
 
 public class NewsAnchor implements Game {
-	
-	private Canvas canvas; 
-	private int i = 0;
-	private FractalTerrain terrain;
-	
+
+  // scale difference between screen space (pixels) and world space (physics).
+  public static float physUnitPerScreenUnit = 1 / 26.666667f;
+
+  ImageLayer bgLayer;
+
+  // main layer that holds the world. note: this gets scaled to world space
+  GroupLayer worldLayer;
+
+  // main world
+  NewsAnchorWorld world = null;
+  boolean worldLoaded = false;
+
   @Override
   public void init() {
-	terrain = new FractalTerrain(8, 0.7);
-
-    // create and add background image layer
+    // load and show our background image
     Image bgImage = assetManager().getImage("images/bg.png");
-    ImageLayer bgLayer = graphics().createImageLayer(bgImage);
+    bgLayer = graphics().createImageLayer(bgImage);
     graphics().rootLayer().add(bgLayer);
-    
-    CanvasLayer layer = graphics().createCanvasLayer(graphics().width(), graphics().height());
-    graphics().rootLayer().add(layer);
-    
-    canvas = layer.canvas();
-	canvas.setStrokeWidth(2);
-	canvas.setStrokeColor(0xffff0000);
-	canvas.strokeRect(1, 1, 46, 46);		
 
+    // create our world layer (scaled to "world space")
+    worldLayer = graphics().createGroupLayer();
+    worldLayer.setScale(1f / physUnitPerScreenUnit);
+    graphics().rootLayer().add(worldLayer);
+
+    NewsAnchorLoader.CreateWorld("peas/levels/level1.json", worldLayer, new ResourceCallback<NewsAnchorWorld>() {
+      @Override
+      public void done(NewsAnchorWorld resource) {
+        world = resource;
+        worldLoaded = true;
+      }
+
+      @Override
+      public void error(Throwable err) {
+        PlayN.log().error("Error loading pea world: " + err.getMessage());
+      }
+    });
+
+    // hook up our pointer listener
+    pointer().setListener(new Pointer.Adapter() {
+      @Override
+      public void onPointerStart(Pointer.Event event) {
+        if (worldLoaded) {
+          /*
+          Pea pea = new Pea(world, world.world, physUnitPerScreenUnit * event.x(),
+                            physUnitPerScreenUnit * event.y(), 0);
+          world.add(pea);
+          */
+        }
+      }
+    });
+  }
+ 
+  public void shutdown() {
+    bgLayer.destroy();
+    bgLayer = null;
+    worldLayer.destroy();
+    worldLayer = null;
+    world = null;
+    worldLoaded = false;
   }
 
   @Override
   public void paint(float alpha) {
-    // the background automatically paints itself, so no need to do anything here!
+    if (worldLoaded) {
+      world.paint(alpha);
+    }
   }
 
   @Override
   public void update(float delta) {
-	  //terrain = new FractalTerrain(8, 0.7);
-
-	  
-	  canvas.clear();
-
-	//Draw terrain
-	Path path = graphics().createPath();
-	
-
-	
-	Vector v1 = new Vector(100, 350);
-	Vector v2 = new Vector(350, 350);
-	Vector v3 = new Vector(500, 100);
-	Vector v4 = new Vector(100, 100);
-
-	path.moveTo(v1.x, v1.y);
-	addSegmentToPath(path, v1, v2);
-	addSegmentToPath(path, v2, v3);
-	addSegmentToPath(path, v3, v4);
-	addSegmentToPath(path, v4, v1);
-	path.close();	  
-	
-	canvas.setStrokeColor(0xff000000);
-	//canvas.setFillColor(0xff00ffff);
-	//canvas.fillPath(path);
-	canvas.strokePath(path);
-	  
-	  
-	  
-	// Draw animated line 
-	canvas.setStrokeColor(0xffff0000);
-	canvas.drawLine(i, 50, 100, 100);
-	  
-
-	// Text
-	canvas.setFillColor(0xff000000);
-	canvas.drawText("Frames: " + i, 200, 200);
-
-	  
-	  i++;
+    if (worldLoaded) {
+      world.update(delta);
+    }
   }
 
-  private void addSegmentToPath(Path path, Vector start, Vector end)
-  {
-	for (int i = 0; i < 50; i++)
-	{
-		Vector v = getTerrainPosition(start, end, i/50.0f);
-		v.addLocal(start);	
-		
-		//System.out.println("x:" + v.x + ", y:" + v.y);
-		path.lineTo(v.x, v.y);
+	@Override
+	public int updateRate() {
+		return 25;
 	}
 
-  }
-  
-  private Vector getTerrainPosition(Vector start, Vector end, float i)
-  {
-	  Vector v1 = end.subtract(start);		// vector from start to end
-	  Vector v2 = new Vector(v1.y, -v1.x);	// orthognal vector to v1
-	  v2.normalizeLocal();
-	  	  
-	  Vector v = v1.scale(i);
-
-	  // Get altitude from FractalTerrain
-	  float altitude = (float)terrain.getAltitude(i, 0);		  
-
-	  // Scale altitude so that it is minimal close to start and end points
-	  float totalDistance = start.distance(end);
-	  float ratioStart = start.distance(start.add(v)) / totalDistance;
-	  float ratioEnd = end.distance(start.add(v)) / totalDistance;	  
-	  altitude = altitude * ratioStart * ratioEnd; 
-	  
-	  // Scale and invert v2
-	  v2.scaleLocal(altitude*400.0f);
-	  v2.negateLocal();
-	  
-	  v.addLocal(v2);
-	  	  
-	  return v;
-  }
-  
-  @Override
-  public int updateRate() {
-    return 25;
-  }
 }
