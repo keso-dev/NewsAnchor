@@ -36,6 +36,7 @@ import keso.newsanchor.core.entities.PhysicsEntity;
 
 import static playn.core.PlayN.graphics;
 
+import playn.core.Canvas;
 import playn.core.CanvasLayer;
 import playn.core.DebugDrawBox2D;
 import playn.core.GroupLayer;
@@ -66,6 +67,14 @@ public class NewsAnchorWorld implements ContactListener {
     scaledLayer.add(dynamicLayer);
     staticLayerFront = graphics().createGroupLayer();
     scaledLayer.add(staticLayerFront);
+    
+    CanvasLayer canvasLayer2 = graphics().createCanvasLayer(15, 15);
+    scaledLayer.add(canvasLayer2);
+    
+    Canvas canvas = canvasLayer2.canvas();
+    canvas.setStrokeColor(0xffff0000); // 0xaarrggbb
+    canvas.drawLine(0, 0, 5, 10);
+    
 
     // create the physics world
     Vec2 gravity = new Vec2(0.0f, 10.0f);

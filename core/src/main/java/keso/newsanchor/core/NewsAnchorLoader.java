@@ -16,6 +16,7 @@
 package keso.newsanchor.core;
 
 import keso.newsanchor.core.entities.Entity;
+import keso.newsanchor.core.entities.Ship;
 import playn.core.AssetWatcher;
 import playn.core.PlayN;
 import playn.core.GroupLayer;
@@ -26,8 +27,13 @@ public class NewsAnchorLoader {
 
   public static void CreateWorld(String level, final GroupLayer worldLayer, final ResourceCallback<NewsAnchorWorld> callback) {
 
-	final NewsAnchorWorld newsAnchorWorld = new NewsAnchorWorld(worldLayer);
+    final NewsAnchorWorld newsAnchorWorld = new NewsAnchorWorld(worldLayer);
 
+    Ship ship = new Ship(newsAnchorWorld, newsAnchorWorld.world, 5, 5, 0);
+    newsAnchorWorld.add(ship);
+
+	/*
+	
     // load the level
     PlayN.assetManager().getText(level, new ResourceCallback<String>() {
 
@@ -48,6 +54,7 @@ public class NewsAnchorLoader {
         });
 
         // parse the level
+    
         Json.Object document = PlayN.json().parse(resource);
 
         // parse the entities, adding each asset to the asset watcher
@@ -60,20 +67,23 @@ public class NewsAnchorLoader {
           float a = (float) jsonEntity.getNumber("a");
 
           Entity entity = null;
-          /*
+          
+          
           if (Pea.TYPE.equalsIgnoreCase(type)) {
             entity = new Pea(peaWorld, peaWorld.world, x, y, a);
           } else if (Block.TYPE.equalsIgnoreCase(type)) {
             entity = new Block(peaWorld, peaWorld.world, x, y, a);
           }
-          */
+          
           
           if (entity != null) {
             assetWatcher.add(entity.getImage());
             newsAnchorWorld.add(entity);
           }
         }
+        
 
+        
         // start the watcher (it will call the callback when everything is
         // loaded)
         assetWatcher.start();
@@ -84,6 +94,7 @@ public class NewsAnchorLoader {
         callback.error(err);
       }
     });
+    */
   }
 
 }
