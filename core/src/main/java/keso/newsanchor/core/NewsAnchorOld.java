@@ -78,7 +78,7 @@ public class NewsAnchorOld implements Game {
 	// Draw animated line 
 	canvas.setStrokeColor(0xffff0000);
 	canvas.drawLine(i, 50, 100, 100);
-	  
+	
 
 	// Text
 	canvas.setFillColor(0xff000000);

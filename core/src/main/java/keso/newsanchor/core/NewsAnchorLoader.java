@@ -31,6 +31,7 @@ public class NewsAnchorLoader {
 
     Ship ship = new Ship(newsAnchorWorld, newsAnchorWorld.world, 5, 5, 0);
     newsAnchorWorld.add(ship);
+    callback.done(newsAnchorWorld);
 
 	/*
 	

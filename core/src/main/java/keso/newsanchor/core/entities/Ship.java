@@ -2,6 +2,7 @@ package keso.newsanchor.core.entities;
 
 import keso.newsanchor.core.NewsAnchorWorld;
 
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -27,23 +28,21 @@ public class Ship extends DynamicPhysicsEntity {
 
 	@Override
 	Body initPhysicsBody(World world, float x, float y, float angle) {
-	  FixtureDef fixtureDef = new FixtureDef();
+    FixtureDef fixtureDef = new FixtureDef();
     BodyDef bodyDef = new BodyDef();
-    bodyDef.type = BodyType.STATIC;
+    bodyDef.type = BodyType.DYNAMIC;
     bodyDef.position = new Vec2(0, 0);
     Body body = world.createBody(bodyDef);
 
-    PolygonShape polygonShape = new PolygonShape();
-    Vec2[] polygon = new Vec2[4];
-    polygon[0] = new Vec2(-getWidth()/2f, -getHeight()/2f);
-    polygon[1] = new Vec2(getWidth()/2f, -getHeight()/2f);
-    polygon[2] = new Vec2(getWidth()/2f, getHeight()/2f);
-    polygon[3] = new Vec2(-getWidth()/2f, getHeight()/2f);
-    polygonShape.set(polygon, polygon.length);
-    fixtureDef.shape = polygonShape;
+    CircleShape circleShape = new CircleShape();
+    circleShape.m_radius = 2;
+    fixtureDef.shape = circleShape;
+    fixtureDef.density = 0.4f;
     fixtureDef.friction = 0.1f;
-    fixtureDef.restitution = 0.8f;
+    fixtureDef.restitution = 0.35f;
+    circleShape.m_p.set(0, 0);
     body.createFixture(fixtureDef);
+    body.setLinearDamping(0.2f);
     body.setTransform(new Vec2(x, y), angle);
     return body;
 	}
