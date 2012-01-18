@@ -25,8 +25,8 @@ import playn.core.ResourceCallback;
 
 public class NewsAnchorLoader {
 
-  public static void CreateWorld(String level, final GroupLayer worldLayer, final ResourceCallback<NewsAnchorWorld> callback) {
-
+  public static void CreateWorld(String level, final GroupLayer worldLayer, final ResourceCallback<NewsAnchorWorld> callback)
+  {
     final NewsAnchorWorld newsAnchorWorld = new NewsAnchorWorld(worldLayer);
 
     Ship ship = new Ship(newsAnchorWorld, newsAnchorWorld.world, 5, 5, 0);

@@ -1,18 +1,3 @@
-/**
- * Copyright 2011 The PlayN Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package keso.newsanchor.core;
 
 import org.jbox2d.callbacks.ContactImpulse;
@@ -40,8 +25,10 @@ import playn.core.Canvas;
 import playn.core.CanvasLayer;
 import playn.core.DebugDrawBox2D;
 import playn.core.GroupLayer;
+import playn.core.PlayN;
 
-public class NewsAnchorWorld implements ContactListener {
+public class NewsAnchorWorld implements ContactListener
+{
   public GroupLayer staticLayerBack;
   public GroupLayer dynamicLayer;
   public GroupLayer staticLayerFront;
@@ -60,7 +47,8 @@ public class NewsAnchorWorld implements ContactListener {
   private static boolean showDebugDraw = false;
   private DebugDrawBox2D debugDraw;
 
-  public NewsAnchorWorld(GroupLayer scaledLayer) {
+  public NewsAnchorWorld(GroupLayer scaledLayer)
+  {
     staticLayerBack = graphics().createGroupLayer();
     scaledLayer.add(staticLayerBack);
     dynamicLayer = graphics().createGroupLayer();
@@ -99,7 +87,8 @@ public class NewsAnchorWorld implements ContactListener {
     wallRightShape.setAsEdge(new Vec2(width, 0), new Vec2(width, height));
     wallRight.createFixture(wallRightShape, 0.0f);
 
-    if (showDebugDraw) {
+    if (showDebugDraw)
+    {
       CanvasLayer canvasLayer =
           graphics().createCanvasLayer((int) (width / NewsAnchor.physUnitPerScreenUnit),
               (int) (height / NewsAnchor.physUnitPerScreenUnit));
@@ -116,8 +105,10 @@ public class NewsAnchorWorld implements ContactListener {
     }
   }
 
-  public void update(float delta) {
-    for (Entity e : entities) {
+  public void update(float delta)
+  {
+    for (Entity e : entities)
+    {
       e.update(delta);
     }
     // the step delta is fixed so box2d isn't affected by framerate
@@ -125,38 +116,48 @@ public class NewsAnchorWorld implements ContactListener {
     processContacts();
   }
 
-  public void paint(float delta) {
-    if (showDebugDraw) {
+  public void paint(float delta)
+  {
+    if (showDebugDraw)
+    {
       debugDraw.getCanvas().canvas().clear();
       world.drawDebugData();
     }
-    for (Entity e : entities) {
+    for (Entity e : entities)
+    {
       e.paint(delta);
     }
   }
 
-  public void add(Entity entity) {
+  public void add(Entity entity)
+  {
     entities.add(entity);
-    if (entity instanceof PhysicsEntity) {
+    if (entity instanceof PhysicsEntity)
+    {
       PhysicsEntity physicsEntity = (PhysicsEntity) entity;
       bodyEntityLUT.put(physicsEntity.getBody(), physicsEntity);
     }
   }
 
   // handle contacts out of physics loop
-  public void processContacts() {
-    while (!contacts.isEmpty()) {
+  public void processContacts()
+  {
+    while (!contacts.isEmpty())
+    {
       Contact contact = contacts.pop();
 
       // handle collision
       PhysicsEntity entityA = bodyEntityLUT.get(contact.m_fixtureA.m_body);
       PhysicsEntity entityB = bodyEntityLUT.get(contact.m_fixtureB.m_body);
 
-      if (entityA != null && entityB != null) {
-        if (entityA instanceof PhysicsEntity.HasContactListener) {
+      if (entityA != null && entityB != null)
+      {
+        if (entityA instanceof PhysicsEntity.HasContactListener)
+        {
           ((PhysicsEntity.HasContactListener) entityA).contact(entityB);
         }
-        if (entityB instanceof PhysicsEntity.HasContactListener) {
+        if (entityB instanceof PhysicsEntity.HasContactListener)
+        {
           ((PhysicsEntity.HasContactListener) entityB).contact(entityA);
         }
       }
@@ -165,22 +166,26 @@ public class NewsAnchorWorld implements ContactListener {
 
   // Box2d's begin contact
   @Override
-  public void beginContact(Contact contact) {
+  public void beginContact(Contact contact)
+  {
     contacts.push(contact);
   }
 
   // Box2d's end contact
   @Override
-  public void endContact(Contact contact) {
+  public void endContact(Contact contact)
+  {
   }
 
   // Box2d's pre solve
   @Override
-  public void preSolve(Contact contact, Manifold oldManifold) {
+  public void preSolve(Contact contact, Manifold oldManifold)
+  {
   }
 
   // Box2d's post solve
   @Override
-  public void postSolve(Contact contact, ContactImpulse impulse) {
+  public void postSolve(Contact contact, ContactImpulse impulse)
+  {
   }
 }

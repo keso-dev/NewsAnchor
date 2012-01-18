@@ -14,20 +14,59 @@ import org.jbox2d.dynamics.World;
 import playn.core.Canvas;
 import playn.core.CanvasLayer;
 
-public class Ship extends DynamicPhysicsEntity {
-  
-  private Canvas canvas;
-  private float width = 15;
-  private float height = 15;
+public class Ship extends DynamicPhysicsEntity
+{  
+  private TileCanvas tile;
+  private int width = 15;
+  private int height = 15;
 
-	public Ship(NewsAnchorWorld newsAnchorWorld, World world, float x, float y,
-			float angle) {
+	public Ship(NewsAnchorWorld newsAnchorWorld, World world, float x, float y, float angle)
+	{
 		super(newsAnchorWorld, world, x, y, angle);
-	// TODO Auto-generated method stub
-	}
 
+		tile = new TileCanvas(width, height);
+    defineShip();
+    
+    newsAnchorWorld.dynamicLayer.add(tile.getLayer());
+	}
+	  
 	@Override
-	Body initPhysicsBody(World world, float x, float y, float angle) {
+	public void paint(float alpha)
+	{
+	  super.paint(alpha);
+	  
+	  // Prepare tile for drawing - should we do this in update method instead?
+	  tile.setPos(x, y);
+    tile.setAngle(angle);
+	}
+	
+  public void setPos(float x, float y)
+  {
+    super.setPos(x, y);
+    tile.setPos(x, y);
+  }
+
+  public void setAngle(float a)
+  {
+    super.setAngle(a);
+    tile.setAngle(a);
+  }
+  
+  /***
+   * Define the ships structure.. 
+   */
+  private void defineShip()
+  {
+    Canvas canvas = tile.getCanvas();
+    canvas.setStrokeColor(0xffff0000); // 0xaarrggbb
+    canvas.drawLine(0, 0, 5, 10);
+    canvas.drawLine(5, 10, 10, 0);
+    canvas.drawLine(10, 0, 0, 0);
+  }
+
+  @Override
+  Body initPhysicsBody(World world, float x, float y, float angle)
+  {
     FixtureDef fixtureDef = new FixtureDef();
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyType.DYNAMIC;
@@ -45,44 +84,5 @@ public class Ship extends DynamicPhysicsEntity {
     body.setLinearDamping(0.2f);
     body.setTransform(new Vec2(x, y), angle);
     return body;
-	}
-	
-	@Override
-	public void initPreLoad(NewsAnchorWorld newsAnchorWorld) {
-	  canvas = ((CanvasLayer)layer).canvas();
-	  defineShip();
-	  super.initPreLoad(newsAnchorWorld);
-	}
-
-	@Override
-	public void initPostLoad(NewsAnchorWorld newsAnchorWorld) {
-	  super.initPostLoad(newsAnchorWorld);
-	}
-	
-	/***
-	 * Define the ships structure.. 
-	 */
-	private void defineShip() {
-	  canvas.setStrokeColor(0xffff0000); // 0xaarrggbb
-	  canvas.drawLine(0, 0, 5, 10);
-	  canvas.drawLine(5, 10, 10, 0);
-	  canvas.drawLine(10, 0, 0, 0);
   }
-
-  @Override
-	float getWidth() {
-		return 15;
-	}
-
-	@Override
-	float getHeight() {
-		return 15;
-	}
-
-	@Override
-	String getImageName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
